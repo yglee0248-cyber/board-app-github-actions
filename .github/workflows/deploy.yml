@@ -20,5 +20,18 @@ jobs: # job 은 1개 이상의 job 으로 구성됨. job 이 여러개인경우 
 
       - name: 명령어 여러개 한번에 사용할 경우
         run: | # run 에 | 해주면 됨
-          echo "Hellow"
+          echo "Hello"
           echo "World"
+
+      - name: EC2 접속
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }} # → 13.125.92.241
+          username: ${{ secrets.EC2_USERNAME }} # → ubuntu
+          key: ${{ secrets.EC2_KEY }} # → pem 내용
+
+          script: | # 실제 코드 수정하는 부분
+            cd ~/board-app-github-actions-v1
+            docker compose pull
+            docker compose up -d
+            docker image prune -f
